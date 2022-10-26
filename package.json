@@ -19,7 +19,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "http://andeleidun.github.io/pokeTable",
+  "homepage": "https://andeleidun.github.io/pokeTable/",
   "eslintConfig": {
     "extends": [
       "react-app",

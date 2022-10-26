@@ -15,7 +15,7 @@ PokeTable is a fun project demonstrating data table behavior in React. It is imp
 
 ## Preview Environment
 
-- Can be live viewed [here](placeholder)
+- Can be live viewed [here](https://andeleidun.github.io/pokeTable/)
 - Can be run locally with `npm start`
 
 ## Usage
