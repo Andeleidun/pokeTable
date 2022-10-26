@@ -1,7 +1,6 @@
 .poketable {
-    width: 95vw;
+    width: 99vw;
     color: #222224;
-    font-family: Verdana, sans-serif;
   }
   
   .poketable caption {
@@ -94,6 +93,10 @@
   
   .poketable .types .bug {
     background-color: #a8b820;
+  }
+
+  .poketable .types .normal {
+    background-color: #A8A878;
   }
   
   .poketable .sprite {
