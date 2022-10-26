@@ -1,6 +1,7 @@
 .poketable {
     width: 99vw;
     color: #222224;
+    margin: 0 auto;
   }
   
   .poketable caption {
