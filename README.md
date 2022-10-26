@@ -2,7 +2,7 @@
 
 ## Introduction
 
-PokeTable is both a fun project demonstrating data table behavior in React. It is implemented in React, using hooks and functional components.
+PokeTable is a fun project demonstrating data table behavior in React. It is implemented in React, using hooks and functional components.
 
 ## Getting Started
 
