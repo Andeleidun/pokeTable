@@ -1,0 +1,113 @@
+.poketable {
+    width: 95vw;
+    color: #222224;
+    font-family: Verdana, sans-serif;
+  }
+  
+  .poketable caption {
+    padding: 10px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .poketable tr {
+    display: grid;
+    grid-template-columns: 15% 30% 17.5% 17.5% 20%;
+    padding: 10px 0;
+  }
+  
+  .poketable .search-box {
+    grid-template-columns: 100%;
+    padding-bottom: 5px;
+  }
+  
+  .poketable thead tr {
+    background-color: #f00000;
+    color: #f0f0f0;
+  }
+  
+  .poketable thead button {
+    background-color: #f00000;
+    color: #f0f0f0;
+    font-size: 16px;
+    padding: 5px;
+    font-weight: bold;
+    border: 0;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .poketable thead input {
+    justify-self: center;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  
+  .poketable tbody tr {
+    height: 70px;
+  }
+  
+  .poketable td {
+    display: grid;
+    grid-template-columns: 100%;
+    justify-items: center;
+    align-content: center;
+  }
+  
+  .poketable tr :is(.types, .name) {
+    grid-template-columns: 50% 50%;
+  }
+  
+  .poketable td span {
+    align-self: center;
+  }
+  
+  .poketable .types span {
+    width: 95%;
+    height: 24px;
+    padding: 5px 0;
+    color: #f0f0f0;
+    font-weight: bold;
+    text-shadow: 2px 2px 2px #222224;
+    border-radius: 20px;
+  }
+  
+  .poketable .types .grass {
+    background-color: #78c850;
+  }
+  
+  .poketable .types .poison {
+    background-color: #a040a0;
+  }
+  
+  .poketable .types .fire {
+    background-color: #f08030;
+  }
+  
+  .poketable .types .flying {
+    background-color: #a890f0;
+  }
+  
+  .poketable .types .water {
+    background-color: #6890f0;
+  }
+  
+  .poketable .types .bug {
+    background-color: #a8b820;
+  }
+  
+  .poketable .sprite {
+    height: 50px;
+    width: 50px;
+  }
+  
+  @media only screen and (max-width: 600px) {
+    .poketable tr :is(.types, .name) {
+      grid-template-columns: 100%;
+    }
+  
+    .poketable .types span {
+      margin: 5px;
+    }
+  }
+  
