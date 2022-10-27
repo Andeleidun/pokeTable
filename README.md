@@ -24,6 +24,7 @@ PokeTable is a fun project demonstrating infinte loading data table behavior in 
 - PokeTable is simultaneously filterable and sortable
 - All columns are valid for filter and sort
 - More button below the table retrieves 20 more Pokemon at a time
+- Pokemon sprites may be interacted with to show shiny versions
 
 ## Contact
 

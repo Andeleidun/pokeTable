@@ -1,4 +1,8 @@
 :root {
+  --loading-color: #FF7276;
+  --shadow-color: #222224;
+  --pokeball-red: #f00000;
+  --pokeball-white: #f0f0f0;
   font-family: Verdana, sans-serif;
   text-align: center;
 }

@@ -14,18 +14,21 @@ function fetchData(url) {
 }
 
 function capitalize(string) {
+  // capitalize the first letter of a string
   return string[0].toUpperCase() + string.slice(1);
 }
 
 export async function fetchPokePages(page) {
   // fetches data from primary apiUrl
-  // then fetches detailed data from response urls
+  // then fetches further data as pages are called
   const url = page.pageParam ? page.pageParam : apiUrl;
   const res = await fetch(url);
   return res.json();
 }
 
 export async function fetchPokemonByUrls(query) {
+  // fetches detailed Pokemon data based on initial
+  // query results
   let urls = [];
   query.queryKey[1].forEach(arr => arr.forEach(item => urls.push(item)));
   let returnResults = [];
@@ -44,7 +47,8 @@ export async function fetchPokemonByUrls(query) {
       height: pokePromise.height / 10,
       weight: pokePromise.weight / 10,
       types: pokePromise.types.map((type) => type.type.name),
-      sprite: pokePromise.sprites.front_default
+      sprite: pokePromise.sprites.front_default,
+      shiny: pokePromise.sprites.front_shiny,
     });
   }
   return returnResults;

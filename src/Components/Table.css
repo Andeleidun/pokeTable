@@ -1,13 +1,18 @@
-.poketable {
+  .poketable {
     width: 98vw;
-    color: #222224;
-    margin: 0 auto 100px auto;
+    color: var(--shadow-color);
+    margin: 0 auto;
   }
   
   .poketable caption {
     padding: 10px;
     font-size: 20px;
     font-weight: bold;
+  }
+
+  .poketable thead {
+    position: sticky;
+    top: 0;
   }
   
   .poketable tr {
@@ -18,17 +23,18 @@
   
   .poketable .search-box {
     grid-template-columns: 100%;
+    padding-top: 15px;
     padding-bottom: 5px;
   }
   
   .poketable thead tr {
-    background-color: #f00000;
-    color: #f0f0f0;
+    background-color: var(--pokeball-red);
+    color: var(--pokeball-white);
   }
   
   .poketable thead button {
-    background-color: #f00000;
-    color: #f0f0f0;
+    background-color: var(--pokeball-red);
+    color: var(--pokeball-white);
     font-size: 16px;
     padding: 5px;
     font-weight: bold;
@@ -41,6 +47,11 @@
     justify-self: center;
     padding: 5px;
     border-radius: 5px;
+  }
+
+  .poketable tbody {
+    margin: 0 5px 150px;
+    display: block;
   }
   
   .poketable tbody tr {
@@ -66,9 +77,9 @@
     width: 95%;
     height: 24px;
     padding: 5px 0;
-    color: #f0f0f0;
+    color: var(--pokeball-white);
     font-weight: bold;
-    text-shadow: 2px 2px 2px #222224;
+    text-shadow: 2px 2px 2px var(--shadow-color);
     border-radius: 20px;
   }
   
@@ -151,15 +162,35 @@
   .poketable .sprite {
     height: 50px;
     width: 50px;
+    cursor: pointer;
   }
 
   .poketable .fetch-row {
     grid-template-columns: 100%;
+    margin-top: 10px;
+  }
+
+  @-webkit-keyframes rocking {
+    0% { transform: translate(0, 0) rotate(0); }
+    20% { transform: translate(-10px, 0) rotate(-10deg); }
+    30% { transform: translate(10px, 0) rotate(10deg); }
+    50% { transform: translate(-10px, 0) rotate(-10deg); }
+    60% { transform: translate(10px, 0) rotate(10deg); }
+    100% { transform: translate(0, 0) rotate(0); }
+  }
+ 
+  @keyframes rocking {
+    0% { transform: translate(0, 0) rotate(0); }
+    20% { transform: translate(-10px, 0) rotate(-10deg); }
+    30% { transform: translate(10px, 0) rotate(10deg); }
+    50% { transform: translate(-10px, 0) rotate(-10deg); }
+    60% { transform: translate(10px, 0) rotate(10deg); }
+    100% { transform: translate(0, 0) rotate(0); }
   }
 
   .poketable .fetch-button {
     background-color: white;
-    color: #222224;
+    color: var(--shadow-color);
     font-size: 14px;
     margin: 0;
     cursor: pointer;
@@ -167,18 +198,31 @@
     width: 55px;
     height: 55px;
     padding: 5px;
-    border: 1px solid #222224;
+    border: 2px solid var(--shadow-color);
     position: relative;
     top: 25px;
   }
 
+  .poketable .loading {
+    -webkit-transform-origin: 50% 0;
+    transform-origin: 50% 50%;
+    -webkit-animation: rocking 1.25s ease-in-out forwards infinite;
+    animation: rocking 1.25s ease-in-out forwards infinite;
+    cursor: progress;
+  }
+
+  .poketable .loading .fetch-button {
+    background-color: var(--loading-color);
+    cursor: progress;
+  }
+
   .poketable .fetch-row .button-outside {
-    background-color: #f00000;
-    border-top: 45px #f00000 solid;
-    border-bottom: 55px #f0f0f0 solid;
+    background-color: var(--pokeball-red);
+    border-top: 45px var(--pokeball-red) solid;
+    border-bottom: 55px var(--pokeball-white) solid;
     padding: 0 50px;
     border-radius: 100%;
-    outline: 1px solid #222224;
+    outline: 2px solid var(--shadow-color);
   }
   
   @media only screen and (max-width: 600px) {

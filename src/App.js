@@ -4,6 +4,8 @@ import PokeTable from "./Components/Table";
 import "./App.css";
 
 export default function App() {
+  // Primary app component, handles React Query
+  // and conditionally loads PokeTable
   const {
     data,
     error,
@@ -18,7 +20,7 @@ export default function App() {
 
   const pokeUrls = data?.pages.map(page => page.results.map((poke) => poke.url));
 
-  const { data: pokemon } = useQuery(
+  const { data: pokemon, isFetching: pokeFetching } = useQuery(
     ['pokemon', pokeUrls], fetchPokemonByUrls,
     {
       enabled: !!pokeUrls,
@@ -31,6 +33,7 @@ export default function App() {
     isFetching,
     isFetchingNextPage,
     status,
+    pokeFetching
   };
 
   if (status === 'loading') return <span>Loading</span>;
