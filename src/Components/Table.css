@@ -1,7 +1,7 @@
 .poketable {
     width: 98vw;
     color: #222224;
-    margin: 0 auto;
+    margin: 0 auto 100px auto;
   }
   
   .poketable caption {
@@ -72,37 +72,113 @@
     border-radius: 20px;
   }
   
-  .poketable .types .grass {
-    background-color: #78c850;
-  }
-  
-  .poketable .types .poison {
-    background-color: #a040a0;
-  }
-  
-  .poketable .types .fire {
-    background-color: #f08030;
-  }
-  
-  .poketable .types .flying {
-    background-color: #a890f0;
-  }
-  
-  .poketable .types .water {
-    background-color: #6890f0;
-  }
-  
-  .poketable .types .bug {
-    background-color: #a8b820;
+  .poketable .types .normal {
+    background-color:#A8A878;
   }
 
-  .poketable .types .normal {
-    background-color: #A8A878;
+  .poketable .types .fire {
+    background-color:#F08030;
+  }
+
+  .poketable .types .water {
+    background-color:#6890F0;
+  }
+
+  .poketable .types .grass {
+    background-color:#78C850;
+  }
+
+  .poketable .types .electric {
+    background-color:#F8D030;
+  }
+
+  .poketable .types .ice {
+    background-color:#98D8D8;
+  }
+
+  .poketable .types .fighting {
+    background-color:#C03028;
+  }
+
+  .poketable .types .poison {
+    background-color:#A040A0;
+  }
+
+  .poketable .types .ground {
+    background-color:#E0C068;
+  }
+
+  .poketable .types .flying {
+    background-color:#A890F0;
+  }
+
+  .poketable .types .psychic {
+    background-color:#F85888;
+  }
+
+  .poketable .types .bug {
+    background-color:#A8B820;
+  }
+
+  .poketable .types .rock {
+    background-color:#B8A038;
+  }
+
+  .poketable .types .ghost {
+    background-color:#705898;
+  }
+
+  .poketable .types .dragon {
+    background-color:#7038F8;
+  }
+
+  .poketable .types .dark {
+    background-color:#705848;
+  }
+
+  .poketable .types .steel {
+    background-color:#B8B8D0;
+  }
+
+  .poketable .types .fairy {
+    background-color:#F0B6BC;
+  }
+  
+  .poketable .types .unknown {
+    background-color:#6AA596;
   }
   
   .poketable .sprite {
     height: 50px;
     width: 50px;
+  }
+
+  .poketable .fetch-row {
+    grid-template-columns: 100%;
+  }
+
+  .poketable .fetch-button {
+    background-color: white;
+    color: #222224;
+    font-size: 14px;
+    margin: 0;
+    cursor: pointer;
+    border-radius: 100%;
+    width: 55px;
+    height: 55px;
+    padding: 5px;
+    border: 1px solid #222224;
+    position: relative;
+    top: 25px;
+  }
+
+  .poketable .fetch-row .button-outside {
+    background-color: #f00000;
+    border-top: 45px #f00000 solid;
+    border-bottom: 55px #f0f0f0 solid;
+    padding: 0 50px;
+    border-radius: 100%;
+    outline: 1px solid #222224;
   }
   
   @media only screen and (max-width: 600px) {

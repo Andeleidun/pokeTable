@@ -17,32 +17,35 @@ function capitalize(string) {
   return string[0].toUpperCase() + string.slice(1);
 }
 
-export default async function fetchPokeData() {
+export async function fetchPokePages(page) {
   // fetches data from primary apiUrl
   // then fetches detailed data from response urls
-  return fetchData(apiUrl)
-    .then(async (data) => {
-      const results = data.results;
-      let promises = [];
-      let returnResults = [];
-      results.forEach((result) => {
-        promises.push(
-          fetchData(result.url)
-            .then((detailedData) => detailedData)
-            .catch((message) => console.error(message))
-        );
-      });
-      for await (const pokePromise of promises) {
-        returnResults.push({
-          pokedexNumber: pokePromise.id,
-          name: capitalize(pokePromise.name),
-          height: pokePromise.height / 10,
-          weight: pokePromise.weight / 10,
-          types: pokePromise.types.map((type) => type.type.name),
-          sprite: pokePromise.sprites.front_default
-        });
-      }
-      return returnResults;
-    })
-    .catch((message) => console.error(message));
+  const url = page.pageParam ? page.pageParam : apiUrl;
+  const res = await fetch(url);
+  return res.json();
+}
+
+export async function fetchPokemonByUrls(query) {
+  let urls = [];
+  query.queryKey[1].forEach(arr => arr.forEach(item => urls.push(item)));
+  let returnResults = [];
+  let promises = [];
+  urls.forEach((url) => {
+    promises.push(
+      fetchData(url)
+        .then((detailedData) => detailedData)
+        .catch((message) => console.error(message))
+    );
+  })
+  for await (const pokePromise of promises) {
+    returnResults.push({
+      pokedexNumber: pokePromise.id,
+      name: capitalize(pokePromise.name),
+      height: pokePromise.height / 10,
+      weight: pokePromise.weight / 10,
+      types: pokePromise.types.map((type) => type.type.name),
+      sprite: pokePromise.sprites.front_default
+    });
+  }
+  return returnResults;
 }

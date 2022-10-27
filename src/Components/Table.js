@@ -23,10 +23,17 @@ function handleColumnData(column, poke) {
   return <span key={poke.name + poke[column]}>{poke[column]}</span>;
 }
 
-function PokeTable({ pokemon }) {
+function PokeTable({ pokemon, fetchNext, statusData }) {
   // uses sort and filter as render keys
   const [sort, setSort] = useState({ key: "pokedexNumber", direction: "↑" });
   const [filter, setFilter] = useState("");
+  const {
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status
+  } = statusData;
+  const loading = isFetching || isFetchingNextPage || status === 'loading';
   let sortedPokemon = [...pokemon];
   if (sort.key !== null) {
     sortedPokemon.sort((a, b) => {
@@ -90,7 +97,7 @@ function PokeTable({ pokemon }) {
     <table className="poketable">
       <caption>PokeTable</caption>
       <thead>
-        <tr className="search-box">
+        <tr className="search-box" key='search-box'>
           <th key="search-header">
             <input
               type="text"
@@ -101,7 +108,7 @@ function PokeTable({ pokemon }) {
             />
           </th>
         </tr>
-        <tr>
+        <tr key='header'>
           {columns.map((column) => {
             const active = sort.key === column.data[0];
             return (
@@ -130,6 +137,29 @@ function PokeTable({ pokemon }) {
             })}
           </tr>
         ))}
+        <tr key='fetch-more' className='fetch-row'>
+          <td>
+            {
+              hasNextPage ? (
+                <div className='button-outside'>
+                  <button
+                    onClick={() => fetchNext()}
+                    disabled={!hasNextPage || loading}
+                    className='fetch-button'
+                  >
+                    {
+                      loading ?
+                        '...' :
+                        'More'
+                    }
+                  </button>
+                </div>
+              ) : (
+                <span>End</span>
+              )
+            }
+          </td>
+        </tr>
       </tbody>
     </table>
   );
