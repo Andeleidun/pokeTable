@@ -1,193 +1,194 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import "./Table.css";
 
 const columns = [
-  {
-    header: "Dex #",
-    data: ["pokedexNumber"]
-  },
-  {
-    header: "Name",
-    data: ["name", "sprite"]
-  },
-  {
-    header: "Height (m)",
-    data: ["height"]
-  },
-  {
-    header: "Weight (kg)",
-    data: ["weight"]
-  },
-  {
-    header: "Type(s)",
-    data: ["types"]
-  }
+  { header: "Dex #", data: ["pokedexNumber"] },
+  { header: "Name", data: ["name", "sprite"] },
+  { header: "Height (m)", data: ["height"] },
+  { header: "Weight (kg)", data: ["weight"] },
+  { header: "Type(s)", data: ["types"] },
 ];
 
+function compareValues(a, b, direction) {
+  if (a === b) return 0;
+  const result = a < b ? -1 : 1;
+  return direction === "ascending" ? result : -result;
+}
+
 function PokeTable({ pokemon, fetchNext, statusData }) {
-  // uses sort and filter as render keys
-  const [sort, setSort] = useState({ key: "pokedexNumber", direction: "↑" });
+  const [sort, setSort] = useState({
+    key: "pokedexNumber",
+    direction: "ascending",
+  });
   const [filter, setFilter] = useState("");
   const [shinies, setShinies] = useState({});
-  const {
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    pokeFetching,
-    status
-  } = statusData;
-  const loading = isFetching || isFetchingNextPage || pokeFetching || status === 'loading';
+  const { hasNextPage, isFetching, isFetchingNextPage, pokeFetching } =
+    statusData;
+  const loading = isFetching || isFetchingNextPage || pokeFetching;
 
   function updateShinies(id) {
-    let newShinies = {...shinies};
-    newShinies[id] = !newShinies[id];
-    setShinies(newShinies);
-  }
-
-  function handleSpriteKeyPress(e, id) {
-    if (e.key === 'Enter') {
-      updateShinies(id)
-    }
+    setShinies((current) => ({ ...current, [id]: !current[id] }));
   }
 
   function handleSort(key) {
-    let direction = "↑";
-    if (sort.key === key && sort.direction === "↑") {
-      direction = "↓";
-    }
-    setSort({ key, direction });
-  };
+    setSort((current) => ({
+      key,
+      direction:
+        current.key === key && current.direction === "ascending"
+          ? "descending"
+          : "ascending",
+    }));
+  }
 
-  function handleInput(e) {
-    setFilter(e.target.value);
-  };
+  const visiblePokemon = useMemo(() => {
+    const normalizedFilter = filter.trim().toLowerCase();
+    const filteredPokemon = normalizedFilter
+      ? pokemon.filter((poke) =>
+          [
+            poke.pokedexNumber,
+            poke.name,
+            poke.height,
+            poke.weight,
+            ...poke.types,
+          ].some((value) =>
+            String(value).toLowerCase().includes(normalizedFilter),
+          ),
+        )
+      : pokemon;
 
-  function handleColumnData(column, poke) {
-    // returns element for each column type
+    return [...filteredPokemon].sort((a, b) =>
+      compareValues(a[sort.key], b[sort.key], sort.direction),
+    );
+  }, [filter, pokemon, sort]);
+
+  function renderCellData(column, poke) {
     if (column === "sprite") {
-      const id = poke.pokedexNumber;
-      if (!shinies[id]) {
-        shinies[id] = false;
-      }
-      const shiny = shinies[id];
-      const spriteImg = <img
-          src={shiny ? poke.shiny : poke[column]}
-          alt={poke.name}
-          key={poke.name + column}
-          className={column}
-          onClick={() => updateShinies(id)}
-          onKeyDown={(e) => handleSpriteKeyPress(e, id)}
-          tabIndex="0"
-        />
-      return spriteImg;
+      const shiny = Boolean(shinies[poke.pokedexNumber]);
+      const sprite = shiny ? poke.shiny : poke.sprite;
+
+      return (
+        <button
+          type="button"
+          className="sprite-button"
+          onClick={() => updateShinies(poke.pokedexNumber)}
+          aria-pressed={shiny}
+          aria-label={`${shiny ? "Show standard" : "Show shiny"} ${poke.name} sprite`}
+          key={`${poke.name}-${column}`}
+        >
+          {sprite ? (
+            <img src={sprite} alt="" className="sprite" />
+          ) : (
+            <span aria-hidden="true">No sprite</span>
+          )}
+        </button>
+      );
     }
+
     if (Array.isArray(poke[column])) {
       return poke[column].map((item) => (
-        <span className={item} key={poke.name + item}>
+        <span className={`type type-${item}`} key={`${poke.name}-${item}`}>
           {item}
         </span>
       ));
     }
-    return <span key={poke.name + poke[column]}>{poke[column]}</span>;
-  }
 
-  let sortedPokemon = [...pokemon];
-  if (sort.key !== null) {
-    sortedPokemon.sort((a, b) => {
-      if (a[sort.key] < b[sort.key]) {
-        return sort.direction === "↑" ? -1 : 1;
-      }
-      if (a[sort.key] > b[sort.key]) {
-        return sort.direction === "↑" ? 1 : -1;
-      }
-      return 0;
-    });
-  }
-  if (filter.length > 0) {
-    sortedPokemon = sortedPokemon.filter((poke) => {
-      const checkValues = { ...poke, sprite: "" };
-      const pokeValues = Object.values(checkValues);
-      return pokeValues.some((item) => {
-        if (Array.isArray(item)) {
-          return item.some((ele) =>
-            ele.toLowerCase().includes(filter.toLowerCase())
-          );
-        }
-        const checkItem = typeof item === "number" ? item.toString() : item;
-        return checkItem.toLowerCase().includes(filter.toLowerCase());
-      });
-    });
+    return <span key={`${poke.name}-${column}`}>{poke[column]}</span>;
   }
 
   return (
-    <table className="poketable">
-      <caption>PokeTable</caption>
-      <thead>
-        <tr className="search-box" key='search-box'>
-          <th key="search-header">
-            <input
-              type="text"
-              placeholder="Search"
-              key="search"
-              value={filter}
-              onChange={handleInput}
-            />
-          </th>
-        </tr>
-        <tr key='header'>
-          {columns.map((column) => {
-            const active = sort.key === column.data[0];
-            return (
-              <th key={column.header}>
-                <button onClick={() => handleSort(column.data[0])}>
-                  {active
-                    ? column.header + " " + sort.direction
-                    : column.header}
-                </button>
-              </th>
-            );
-          })}
-        </tr>
-      </thead>
-      <tbody>
-        {sortedPokemon.map((poke) => (
-          <tr key={poke.id}>
-            {columns.map((column) => {
-              return (
-                <td className={column.data[0]} key={poke.id + column.data[0]}>
-                  {column.data.map((columnData) =>
-                    handleColumnData(columnData, poke)
-                  )}
-                </td>
-              );
-            })}
-          </tr>
-        ))}
-        <tr key='fetch-more' className='fetch-row'>
-          <td>
-            {
-              hasNextPage ? (
-                <div className={loading ? 'button-outside loading' : 'button-outside'}>
-                  <button
-                    onClick={() => fetchNext()}
-                    disabled={!hasNextPage || loading}
-                    className='fetch-button'
+    <section className="table-section" aria-labelledby="poke-table-title">
+      <div className="table-toolbar">
+        <div>
+          <h1 id="poke-table-title">PokeTable</h1>
+          <p>Explore, filter, sort, and load Pokémon from PokéAPI.</p>
+        </div>
+        <label className="search-field">
+          <span>Filter Pokémon</span>
+          <input
+            type="search"
+            placeholder="Name, type, number…"
+            value={filter}
+            onChange={(event) => setFilter(event.target.value)}
+          />
+        </label>
+      </div>
+
+      <div className="table-scroll" tabIndex="0" aria-label="Pokémon data table">
+        <table className="poketable">
+          <caption className="visually-hidden">
+            Pokémon loaded from PokéAPI. Sort columns with the header buttons and
+            activate a Pokémon sprite to toggle its shiny form.
+          </caption>
+          <thead>
+            <tr>
+              {columns.map((column) => {
+                const sortKey = column.data[0];
+                const active = sort.key === sortKey;
+                return (
+                  <th
+                    key={column.header}
+                    scope="col"
+                    aria-sort={active ? sort.direction : "none"}
                   >
-                    {
-                      loading ?
-                        '' :
-                        'More'
-                    }
-                  </button>
-                </div>
-              ) : (
-                <span>End</span>
-              )
-            }
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                    <button type="button" onClick={() => handleSort(sortKey)}>
+                      <span>{column.header}</span>
+                      <span aria-hidden="true" className="sort-indicator">
+                        {active
+                          ? sort.direction === "ascending"
+                            ? "↑"
+                            : "↓"
+                          : "↕"}
+                      </span>
+                    </button>
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {visiblePokemon.map((poke) => (
+              <tr key={poke.id ?? poke.pokedexNumber}>
+                {columns.map((column) => (
+                  <td
+                    className={column.data[0]}
+                    key={`${poke.pokedexNumber}-${column.data[0]}`}
+                  >
+                    {column.data.map((columnData) =>
+                      renderCellData(columnData, poke),
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+            {visiblePokemon.length === 0 && (
+              <tr>
+                <td colSpan={columns.length} className="empty-state">
+                  No Pokémon match “{filter}”.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="load-more">
+        {hasNextPage ? (
+          <button
+            type="button"
+            onClick={fetchNext}
+            disabled={loading}
+            className="fetch-button"
+          >
+            {loading ? "Loading more…" : "Load 20 more"}
+          </button>
+        ) : (
+          <p>All available Pokémon are loaded.</p>
+        )}
+        <p className="visually-hidden" role="status" aria-live="polite">
+          {loading ? "Loading more Pokémon" : `${pokemon.length} Pokémon loaded`}
+        </p>
+      </div>
+    </section>
   );
 }
 
