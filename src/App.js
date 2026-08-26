@@ -7,7 +7,6 @@ export default function App() {
   const pagesQuery = useInfiniteQuery({
     queryKey: ["pokePages"],
     queryFn: fetchPokePages,
-    initialPageParam: undefined,
     getNextPageParam: (lastPage) => lastPage.next ?? undefined,
   });
 
@@ -20,10 +19,10 @@ export default function App() {
     queryKey: ["pokemon", pokeUrls],
     queryFn: fetchPokemonByUrls,
     enabled: pokeUrls.length > 0,
-    placeholderData: (previousData) => previousData,
+    keepPreviousData: true,
   });
 
-  if (pagesQuery.isPending) {
+  if (pagesQuery.isLoading) {
     return <p role="status">Loading Pokémon…</p>;
   }
 
