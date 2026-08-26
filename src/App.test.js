@@ -46,7 +46,7 @@ test("loads and renders Pokémon data", async () => {
   expect(
     await screen.findByRole("heading", { name: "PokeTable" }),
   ).toBeInTheDocument();
-  expect(screen.getByText("Bulbasaur")).toBeInTheDocument();
+  expect(await screen.findByText("Bulbasaur")).toBeInTheDocument();
   expect(screen.getByRole("columnheader", { name: /dex/i })).toHaveAttribute(
     "aria-sort",
     "ascending",
