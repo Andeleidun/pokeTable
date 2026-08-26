@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "packageManager": "npm@10.8.2",
+  "packageManager": "npm@10.9.9",
   "engines": {
     "node": ">=22.12.0",
-    "npm": ">=10.8.0"
+    "npm": ">=10.9.9"
   },
   "homepage": "https://andeleidun.github.io/pokeTable/",
   "scripts": {
