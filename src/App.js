@@ -1,55 +1,60 @@
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
-import { fetchPokePages, fetchPokemonByUrls } from "./Utilities/fetchPokemon";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import PokeTable from "./Components/Table";
+import { fetchPokePages, fetchPokemonByUrls } from "./Utilities/fetchPokemon";
 import "./App.css";
 
 export default function App() {
-  // Primary app component, handles React Query
-  // and conditionally loads PokeTable
-  const {
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    status,
-  } = useInfiniteQuery(['pokePages'], fetchPokePages, {
-    getNextPageParam: (lastPage) => lastPage.next,
+  const pagesQuery = useInfiniteQuery({
+    queryKey: ["pokePages"],
+    queryFn: fetchPokePages,
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage) => lastPage.next ?? undefined,
   });
 
-  const pokeUrls = data?.pages.map(page => page.results.map((poke) => poke.url));
+  const pokeUrls =
+    pagesQuery.data?.pages.flatMap((page) =>
+      page.results.map((pokemon) => pokemon.url),
+    ) ?? [];
 
-  const { data: pokemon, isFetching: pokeFetching } = useQuery(
-    ['pokemon', pokeUrls], fetchPokemonByUrls,
-    {
-      enabled: !!pokeUrls,
-      keepPreviousData: true
-    }
-  );
+  const pokemonQuery = useQuery({
+    queryKey: ["pokemon", pokeUrls],
+    queryFn: fetchPokemonByUrls,
+    enabled: pokeUrls.length > 0,
+    placeholderData: (previousData) => previousData,
+  });
 
-  const statusData = {
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    status,
-    pokeFetching
-  };
+  if (pagesQuery.isPending) {
+    return <p role="status">Loading Pokémon…</p>;
+  }
 
-  if (status === 'loading') return <span>Loading</span>;
-  if (status === 'error') return <span>Error: {error.message}</span>;
+  if (pagesQuery.isError) {
+    return (
+      <p role="alert">
+        Unable to load Pokémon: {pagesQuery.error.message}
+      </p>
+    );
+  }
+
+  if (pokemonQuery.isError) {
+    return (
+      <p role="alert">
+        Unable to load Pokémon details: {pokemonQuery.error.message}
+      </p>
+    );
+  }
+
   return (
-    <div className="App">
-      {
-        pokemon ? (
-          <PokeTable 
-            pokemon={pokemon} 
-            fetchNext={() => fetchNextPage()} 
-            statusData={statusData} 
-          />
-        ) : <span>Loading</span>
-      }
-
-    </div>
+    <main className="App">
+      <PokeTable
+        pokemon={pokemonQuery.data ?? []}
+        fetchNext={() => pagesQuery.fetchNextPage()}
+        statusData={{
+          hasNextPage: pagesQuery.hasNextPage,
+          isFetching: pagesQuery.isFetching,
+          isFetchingNextPage: pagesQuery.isFetchingNextPage,
+          pokeFetching: pokemonQuery.isFetching,
+        }}
+      />
+    </main>
   );
 }
